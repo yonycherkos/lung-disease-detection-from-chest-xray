@@ -102,3 +102,12 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# atom editor
+.idea/
+
+# dataset
+data/
+
+# tensorboard logs
+logs/
