@@ -111,3 +111,6 @@ data/
 
 # tensorboard logs
 logs/
+
+# outputs
+output/
