@@ -114,3 +114,9 @@ logs/
 
 # outputs
 output/
+
+# atom text editor
+.idea
+
+# jupyter notebook
+.ipyb_checkpoints
