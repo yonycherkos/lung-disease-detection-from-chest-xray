@@ -13,7 +13,7 @@ class ImageUpload extends React.Component {
   onInputChange = event => {
     if (event.target.files[0] != null) {
       let filename = event.target.files[0].name;
-      let filepath = window.location.origin + "/images/" + filename;
+      let filepath = URL.createObjectURL(event.target.files[0]);
 
       let reader = new FileReader();
       reader.readAsDataURL(event.target.files[0]);
