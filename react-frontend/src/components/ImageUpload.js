@@ -7,7 +7,25 @@ class ImageUpload extends React.Component {
     filename: "Choose Image",
     filepath: `${process.env.PUBLIC_URL}/images/Line-Drawing-chest.jpg`,
     base64Image: null,
-    prediction: null
+    prediction: [],
+    class_names: [
+      "Atelectasis",
+      "Cardiomegaly",
+      "Consolidation",
+      "Edema",
+      "Effusion",
+      "Emphysema",
+      "Fibrosis",
+      "Hernia",
+      "Infiltration",
+      "Mass",
+      "Nodule",
+      "Pleural_Thickening",
+      "Pneumonia",
+      "Pneumothorax"
+    ],
+    predicted_class_name: "",
+    predicted_class_value: ""
   };
 
   onInputChange = event => {
@@ -19,8 +37,14 @@ class ImageUpload extends React.Component {
       reader.readAsDataURL(event.target.files[0]);
       reader.onload = () => {
         let dataURL = reader.result;
-        let base64Image = dataURL.replace("data:image/jpeg;base64,", "");
-        this.setState({ filename, filepath, base64Image });
+        let base64Image = dataURL.replace("data:image/png;base64,", "");
+        this.setState({
+          filename,
+          filepath,
+          base64Image,
+          predicted_class_name: "",
+          predicted_class_value: ""
+        });
       };
     } else {
       console.log("image is not selected");
@@ -36,8 +60,18 @@ class ImageUpload extends React.Component {
     axios
       .post(url, message)
       .then(response => {
-        this.setState({ prediction: response.data.prediction });
-        console.log(response.data);
+        this.props.onFormSubmit(response.data.prediction);
+        let prediction = response.data.prediction[0];
+        let predicted_class_name = this.state.class_names[
+          prediction.indexOf(Math.max(...prediction))
+        ];
+        let predicted_class_value = (Math.max(...prediction) * 100).toFixed(2);
+        this.setState({
+          prediction: prediction,
+          predicted_class_name: predicted_class_name + ": ",
+          predicted_class_value: predicted_class_value + "%"
+        });
+        console.log(response.data.prediction[0]);
       })
       .catch(error => console.log(error));
   };
@@ -89,6 +123,13 @@ class ImageUpload extends React.Component {
               </button>
             </div>
           </form>
+          <div>
+            <h3>Prediction Results</h3>
+            <p>
+              {this.state.predicted_class_name +
+                this.state.predicted_class_value}
+            </p>
+          </div>
         </div>
       </div>
     );

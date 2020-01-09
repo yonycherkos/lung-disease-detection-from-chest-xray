@@ -3,10 +3,16 @@ import ImageUpload from "./components/ImageUpload";
 import "./App.css";
 
 class App extends Component {
+  state = {
+    prediction: null
+  };
+  onFormSubmit = prediction => {
+    this.setState({ prediction: prediction });
+  };
   render() {
     return (
       <div>
-        <ImageUpload />
+        <ImageUpload onFormSubmit={this.onFormSubmit} />
       </div>
     );
   }
