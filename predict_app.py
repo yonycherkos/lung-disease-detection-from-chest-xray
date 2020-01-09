@@ -13,15 +13,13 @@ import prediction
 
 # loading model
 output_dir = "output/"
-model_architecture_path = os.path.join(output_dir, "model_architecture/xray_imaging_architecture.json")
+model_architecture_path = os.path.join(output_dir, "model_architecure/xray_imaging_architecture.json")
 model_weights_path = os.path.join(output_dir, "model_weights/xray_imaging_weights.h5")
 print(" * Loading Keras model...")
-prediction.get_model(model_architecture_path, model_weights_path):
+prediction.get_model(model_architecture_path, model_weights_path)
 
 app = Flask(__name__)
-CORS(app)
-
-
+CORS(app
 @app.route("/predict", methods=['POST'])
 def predict():
     message = request.get_json(force=True)
@@ -30,9 +28,9 @@ def predict():
     image = Image.open(io.BytesIO(decoded))
     predictions = prediction.predict(prediction.model, image)
     response = {
-        "prediction": predictions.tolist()
+        "prediction": predictions
     }
-    return jsonify(response)
+    return response
 
 
 if __name__ == "__main__":
