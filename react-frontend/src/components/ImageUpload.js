@@ -25,7 +25,8 @@ class ImageUpload extends React.Component {
       "Pneumothorax"
     ],
     predicted_class_name: "",
-    predicted_class_value: ""
+    predicted_class_value: "",
+    prediction_graph: null
   };
 
   onInputChange = event => {
@@ -43,7 +44,8 @@ class ImageUpload extends React.Component {
           filepath,
           base64Image,
           predicted_class_name: "",
-          predicted_class_value: ""
+          predicted_class_value: "",
+          prediction_graph: null
         });
       };
     } else {
@@ -69,9 +71,11 @@ class ImageUpload extends React.Component {
         this.setState({
           prediction: prediction,
           predicted_class_name: predicted_class_name + ": ",
-          predicted_class_value: predicted_class_value + "%"
+          predicted_class_value: predicted_class_value + "%",
+          prediction_graph: response.data.prediction_graph
         });
         console.log(response.data.prediction[0]);
+        console.log(response.data);
       })
       .catch(error => console.log(error));
   };
@@ -124,6 +128,13 @@ class ImageUpload extends React.Component {
             </div>
           </form>
           <div>
+            <h3>Bar Graph</h3>
+            <img
+              src={`data:image/png;base64,${this.state.prediction_graph}`}
+              className="img-fluid"
+              alt="bar graph"
+            ></img>
+            <br />
             <h3>Prediction Results</h3>
             <p>
               {this.state.predicted_class_name +
