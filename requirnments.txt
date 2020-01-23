@@ -1,0 +1,18 @@
+# machine learning framework and libraries
+numpy
+pandas
+matplotlib
+opencv
+pillow
+tensorflow
+keras
+
+# web application framework and libraries
+# frontend
+react
+react-dom
+axios
+
+# backend
+flask
+flask_cors
