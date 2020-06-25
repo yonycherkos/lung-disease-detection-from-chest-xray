@@ -3,18 +3,25 @@ import numpy as np
 import config
 
 
-def get_class_counts(df, class_names):
-    total_count = df.shape[0]
+# def get_class_counts(df, class_names):
+#     total_count = df.shape[0]
+#     labels = df[class_names]
+#     class_counts = np.sum(labels, axis=0)
+#     class_counts_dict = dict(zip(class_names, class_counts))
+#     return total_count, class_counts_dict
+
+
+# def compute_class_weight(total_count, class_counts_dict):
+#     class_weight = {}
+#     for (i, class_count) in class_counts_dict.values():
+#         class_weight[i] = (total_count - class_count)/total_count
+#     return class_weight
+
+def compute_class_weight(df, class_names):
     labels = df[class_names]
-    class_counts = np.sum(labels, axis=0)
-    class_counts_dict = dict(zip(class_names, class_counts))
-    return total_count, class_counts_dict
-
-
-def compute_class_weight(total_count, class_counts_dict):
-    class_weight = {}
-    for (i, class_count) in class_counts_dict.values():
-        class_weight[i] = (total_count - class_count)/total_count
+    labels = np.array(labels)
+    class_totals = labels.sum(axis=0)
+    class_weight = class_totals.max() / class_totals
     return class_weight
 
 

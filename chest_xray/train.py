@@ -147,10 +147,8 @@ class Train():
                           metrics=["accuracy"])
 
         # compute class weights
-        total_count, class_count_dict = utils.get_class_counts(
-            self.train_df, config.CLASS_NAMES)
         class_weight = utils.compute_class_weight(
-            total_count, class_count_dict)
+            self.train_df, config.CLASS_NAMES)
 
         # check multiple gpu availability
         # TODO: how to train model on multiple gpu?
