@@ -43,7 +43,7 @@ if __name__ == "__main__":
     processed_image = preprocess_image(image)
 
     # prediction on the processed image
-    prediction_map = predict(model, image)
+    prediction_map = predict(model, processed_image)
     for (key, value) in prediction_map.items():
         print(f"{key}: {value}")
 
