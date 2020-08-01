@@ -55,6 +55,20 @@ def chest_xrays14():
     return chest_xrays14_df
 
 
+def chest_xrays4(chest_xrays14_df):
+    chest_xrays4_df = chest_xrays14_df.loc[:, config.COLUMNS[:-1]]
+    finding_df = chest_xrays14_df[chest_xrays4_df.loc[:,
+                                                      config.CLASS_NAMES[1:-1]].any(axis=1)]
+
+    no_finding_df = chest_xrays14_df[chest_xrays4_df.loc[:,
+                                                         config.CLASS_NAMES[1:-1]].any(axis=1) == False]
+    no_finding_df = no_finding_df[:int(finding_df.shape[0])]
+
+    chest_xrays4_df = pd.concat([finding_df, no_finding_df])
+    chest_xrays4_df = chest_xrays4_df.sample(frac=1)
+    return chest_xrays4_df
+
+
 def TB_chest_xrays():
     # create TB_xray_shenzen dataframe and process it
     TB_shenzen_df = pd.read_csv(config.TB_SHENZHEN_METADATA_PATH)
@@ -88,18 +102,18 @@ def TB_chest_xrays():
     return TB_chest_xrays_df
 
 
-def chest_xrays15(chest_xrays14_df, TB_chest_xrays_df):
+def chest_xrays5(chest_xrays4_df, TB_chest_xrays_df):
     # concatinate the two dataframes
-    chest_xrays15_df = pd.concat(
-        [chest_xrays14_df, TB_chest_xrays_df], ignore_index=True)
+    chest_xrays5_df = pd.concat(
+        [chest_xrays4_df, TB_chest_xrays_df], ignore_index=True)
 
     # fill NaN entries with zero.
-    chest_xrays15_df = chest_xrays15_df.fillna(0)
+    chest_xrays5_df = chest_xrays5_df.fillna(0)
 
     # shuffle the dataset
-    chest_xrays15_df = chest_xrays15_df.sample(frac=1)
+    chest_xrays5_df = chest_xrays5_df.sample(frac=1)
 
-    return chest_xrays15_df
+    return chest_xrays5_df
 
 
 def train_validation_test_split(df, train_split=.9, val_split=.05):
@@ -161,22 +175,28 @@ if __name__ == "__main__":
     print(chest_xrays14_df.sample(3))
 
     # ==============================================================
+    # chest_xrays4
+    chest_xrays4_df = chest_xrays4(chest_xrays14_df)
+    print("[INFO] chext_xrays4_df count: ", chest_xrays4_df.shape[0])
+    print(chest_xrays4_df.sample(3))
+
+    # ==============================================================
     # TB_chest_xrays
     TB_chest_xrays_df = TB_chest_xrays()
     print("[INFO] TB_chest_xrays_df count: ", TB_chest_xrays_df.shape[0])
     print(TB_chest_xrays_df.sample(3))
 
     # ==============================================================
-    # chest_xrays15
-    chest_xrays15_df = chest_xrays15(chest_xrays14_df, TB_chest_xrays_df)
-    visualize_class_count(chest_xrays15_df, config.CLASS_NAMES)
-    print("[INFO] chest_xrays15_df count: ", chest_xrays15_df.shape[0])
-    print(chest_xrays15_df.sample(3))
-    print(chest_xrays15_df.info())
+    # chest_xrays5
+    chest_xrays5_df = chest_xrays5(chest_xrays14_df, TB_chest_xrays_df)
+    visualize_class_count(chest_xrays5_df, config.CLASS_NAMES)
+    print("[INFO] chest_xrays5_df count: ", chest_xrays5_df.shape[0])
+    print(chest_xrays5_df.sample(3))
+    print(chest_xrays5_df.info())
 
     # ==============================================================
     # split the dataset into 90% training, 5% validation and 5% test
-    (train_df, val_df, test_df) = train_validation_test_split(chest_xrays15_df)
+    (train_df, val_df, test_df) = train_validation_test_split(chest_xrays5_df)
 
     # move the image from 'chest_xrays/' and 'tuberclusosis/'to train, validtion, and test paths.
     move_images(train_df, val_df, test_df)

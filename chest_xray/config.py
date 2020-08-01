@@ -34,9 +34,11 @@ TB_MONTGOMERY_METADATA_PATH = os.path.sep.join(
 TB_MONTGOMERY_IMAGES_BASE_PATH = os.path.sep.join([TB_SHENZHEN_PATH, "images"])
 
 # ==============================================================
-# chest_xrays15
-CLASS_NAMES = ['Atelectasis', 'Cardiomegaly', 'Consolidation', 'Edema', 'Effusion', 'Emphysema', 'Fibrosis',
-               'Hernia', 'Infiltration', 'Mass', 'Nodule', 'Pleural_Thickening', 'Pneumonia', 'Pneumothorax', 'Tuberculosis']
+# chest_xrays5
+CLASS_NAMES = ['Atelectasis', 'Effusion',
+               'Pneumonia', 'Pneumothorax', 'Tuberculosis']
+COLUMNS = ['Image Path', 'Atelectasis', 'Effusion',
+           'Pneumonia', 'Pneumothorax', 'Tuberculosis']
 
 # ==============================================================
 # training, validation, and testing images paths
