@@ -4,15 +4,15 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 import shutil
-from glob import glob
+from imutils import paths
 from itertools import chain
 from utils import get_class_counts
 import config
 
 
 def add_image_path(df, images_base_path):
-    images_path = {os.path.basename(x): x for x in glob(
-        os.path.join(images_base_path, '*.png'))}
+    images_path = {os.path.basename(image_path): image_path for image_path in list(
+        paths.list_images(images_base_path))}
     print('Scans found:', len(images_path), ', Total Headers', df.shape[0])
     df['Image Path'] = df['Image Index'].map(images_path.get)
     return df
