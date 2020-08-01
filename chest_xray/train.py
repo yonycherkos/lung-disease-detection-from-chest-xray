@@ -11,8 +11,7 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.callbacks import ModelCheckpoint, ReduceLROnPlateau, TensorBoard, EarlyStopping
 from tensorflow.keras.utils import multi_gpu_model
 from sklearn.model_selection import roc_auc_score
-import utils
-import config
+from helper import utils, config
 
 
 class Train():
@@ -60,7 +59,7 @@ class Train():
                                        horizontal_flip=False)  # TODO: do we need apply imagenet mean and std.
         val_aug = ImageDataGenerator(rescale=1./255)
 
-        train_datagen = train_aug.flow_from_datafram(self.train_df,
+        train_datagen = train_aug.flow_from_dataframe(self.train_df,
                                                      directory=None,  # can be none if x_col is full image path
                                                      x_col=self.train_df["Image Path"],
                                                      y_col=config.CLASS_NAMES,
@@ -70,7 +69,7 @@ class Train():
                                                      batch_size=config.BATCH_SIZE,
                                                      shuffle=True)
 
-        val_datagen = val_aug.flow_from_datafram(self.val_df,
+        val_datagen = val_aug.flow_from_dataframe(self.val_df,
                                                  directory=None,
                                                  x_col=self.train_df["Image Path"],
                                                  y_col=config.CLASS_NAMES,
@@ -136,9 +135,9 @@ class Train():
         else:
             print("[INFO] create new model...")
             # make directories to store the training outputs,.
-            output_paths = [config.MODEL_PATH, config.LOG_DIR]
-            for ouput_path in output_paths:
-                os.makedirs(ouput_path)
+            # output_paths = [config.MODEL_PATH, config.LOG_DIR]
+            # for ouput_path in output_paths:
+            #     os.makedirs(ouput_path)
 
             # model = self.build_model()
             print("[INFO] compile the model")
@@ -152,9 +151,9 @@ class Train():
 
         # check multiple gpu availability
         # TODO: how to train model on multiple gpu?
-        gpus = len(os.getenv("CUDA_VISIBLE_DEVICES", "1").split(","))
-        # gpus = len(tf.config.experimental.list_physical_devices("GPU"))
-        if gpus > 1:
+        # gpus = os.getenv("CUDA_VISIBLE_DEVICES", "1").split(",")
+        gpus = tf.config.experimental.list_physical_devices("GPU")
+        if len(gpus) > 1:
             print(f"[INFO] multi_gpu_model is used! gpus={gpus}")
             model = multi_gpu_model(model, gpus)
         else:

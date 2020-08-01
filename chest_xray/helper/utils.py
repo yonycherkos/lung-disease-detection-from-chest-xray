@@ -17,11 +17,12 @@ import config
 #         class_weight[i] = (total_count - class_count)/total_count
 #     return class_weight
 
-def compute_class_weight(df, class_names):
-    labels = df[class_names]
+def compute_class_weight(df):
+    labels = df[config.CLASS_NAMES]
     labels = np.array(labels)
     class_totals = labels.sum(axis=0)
     class_weight = class_totals.max() / class_totals
+    class_weight = zip(range(len(class_weight)), class_weight)
     return class_weight
 
 

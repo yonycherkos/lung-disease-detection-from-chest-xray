@@ -6,8 +6,8 @@ import os
 import shutil
 from imutils import paths
 from itertools import chain
-from utils import get_class_counts
-import config
+from helper.utils import get_class_counts
+from helper import config
 
 
 def add_image_path(df, images_base_path):

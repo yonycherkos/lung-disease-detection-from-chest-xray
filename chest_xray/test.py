@@ -6,8 +6,8 @@ import os
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.models import load_model
 from sklearn.metrics import roc_auc_score, accuracy_score, classification_report, confusion_matrix
-import utils
-import config
+from helper import utils
+from helper import config
 
 
 class Test():

@@ -6,7 +6,8 @@ import os
 import argparse
 import cv2
 from tensorflow.keras.models import load_model
-from lib import config, utils, heatmap
+from helper import config, utils, heatmap
+
 
 def preprocess_image(image, target_size=(224, 224)):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -16,6 +17,7 @@ def preprocess_image(image, target_size=(224, 224)):
     image_tensor = np.expand_dims(image_array, axis=0)
     return image_tensor
 
+
 def predict(model, processed_image):
     # predict on preprocessed image
     print("[INFO] make prediction on sample image")
@@ -23,7 +25,7 @@ def predict(model, processed_image):
     prediction = np.round(prediction, 3)
 
     # sort prediction result based on confidence score
-    prediction_map = utils.sort_prediction(prediction, config.CLASS_NAMES)
+    prediction_map = utils.sort_prediction(prediction)
 
     return prediction_map
 
@@ -39,6 +41,7 @@ if __name__ == "__main__":
     model = load_model(config.MODEL_PATH)
 
     # process image before prediction
+    # TODO: why not use keras imutils_imagenet to preprocess the input image.
     image = cv2.imread(args["image"])
     processed_image = preprocess_image(image)
 
