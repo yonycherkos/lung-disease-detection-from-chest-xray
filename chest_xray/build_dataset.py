@@ -11,24 +11,20 @@ from helper import config
 
 
 def add_image_path(df, images_base_path):
-    images_path = {os.path.basename(image_path): image_path for image_path in list(
-        paths.list_images(images_base_path))}
-    print('Scans found:', len(images_path), ', Total Headers', df.shape[0])
-    df['Image Path'] = df['Image Index'].map(images_path.get)
+    image_paths = list(paths.list_images(images_base_path))
+    image_paths_map = {image_path.split(
+        os.path.sep)[-1].split('.')[-2]: image_path for image_path in image_paths}
+    print('Scans found:', len(image_paths), ', Total Headers', df.shape[0])
+    df['Image Path'] = df['Image Index'].map(image_paths_map.get)
     return df
 
 
-def onehot_encode(df):
+def onehot_encode(df, class_names):
     df['Finding Labels'] = df['Finding Labels'].map(
-        lambda x: x.replace('No Finding', ''))
-    labels = np.unique(
-        list(chain(*df['Finding Labels'].map(lambda x: x.split('|')).tolist())))
-    labels = [x for x in labels if len(x) > 0]
-    print('All Labels ({}): {}'.format(len(labels), labels))
-    for label in labels:
-        if len(label) > 1:  # leave out empty labels
-            df[label] = df['Finding Labels'].map(
-                lambda finding: 1 if label in finding else 0)
+        lambda finding_label: finding_label.split('|'))
+    for class_name in class_names:
+        df[class_name] = df['Finding Labels'].map(
+            lambda finding_label: 1 if class_name in finding_label else 0)
     return df
 
 
@@ -47,7 +43,8 @@ def chest_xrays14():
         chest_xrays14_df, config.CHESTXRAY14_IMAGES_BASE_PATH)
 
     # change the labels to one hot encoded values
-    chest_xrays14_df = onehot_encode(chest_xrays14_df)
+    chest_xrays14_df = onehot_encode(
+        chest_xrays14_df, config.CHESTXRAY14_COLS[2:])
 
     # keep only some of the columns
     chest_xrays14_df = chest_xrays14_df.loc[:, config.CHESTXRAY14_COLS]
@@ -89,12 +86,12 @@ def TB_chest_xrays():
     TB_chest_xrays_df = TB_chest_xrays_df.loc[:, [
         'Image Index', 'Finding Labels', 'Image Path']]
 
-    # ranaming column names
+    # ranaming finding label names
     TB_chest_xrays_df['Finding Labels'] = TB_chest_xrays_df['Finding Labels'].map(
         lambda finding: 'No Finding' if finding == 'normal' else 'Tuberculosis')
 
     # change the labels to one hot encoded values
-    TB_chest_xrays_df = onehot_encode(TB_chest_xrays_df)
+    TB_chest_xrays_df = onehot_encode(TB_chest_xrays_df, config.TB_COLS[2:])
 
     # keep only some of the columns
     TB_chest_xrays_df = TB_chest_xrays_df.loc[:, config.TB_COLS]
